@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administration — Mes "experimentations".</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080a14;color:#eef2ff;font-family:Inter,system-ui,sans-serif}.wrap{width:min(1050px,92vw);margin:auto;padding:45px 0}.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:25px}h1{margin:0}.muted{color:#98a2c2}.panel{background:#12162a;border:1px solid #252b48;border-radius:20px;padding:22px;margin:16px 0}label{display:block;font-weight:700;margin:14px 0 7px}input,textarea{width:100%;padding:13px;border-radius:12px;border:1px solid #313957;background:#0c0f1d;color:#fff}textarea{min-height:110px;resize:vertical}button{border:0;border-radius:12px;padding:12px 16px;font-weight:750;cursor:pointer}.primary{background:#fff;color:#101225}.danger{background:#4b1720;color:#ffdfe3}.secondary{background:#252b48;color:#eef2ff}.drop{border:1px dashed #566183;border-radius:15px;padding:30px;text-align:center}.item{display:flex;gap:15px;align-items:center;justify-content:space-between;border-top:1px solid #252b48;padding:16px 0}.item:first-child{border-top:0}.actions{display:flex;gap:8px;flex-wrap:wrap}.status{margin-top:12px;min-height:20px;color:#aeb8d6}.hidden{display:none}.login{text-align:center;padding:80px 20px}.small{font-size:13px}
+</style>
+</head>
+<body><main class="wrap">
+<div id="login" class="panel login"><h1>🔐 Administration</h1><p class="muted">Connexion réservée au compte autorisé.</p><button class="primary" id="loginBtn">Se connecter avec GitHub</button></div>
+<div id="app" class="hidden">
+<div class="top"><div><h1>Mes "experimentations".</h1><div id="who" class="muted"></div></div><button class="secondary" id="logout">Se déconnecter</button></div>
+<section class="panel"><h2>📤 Ajouter un audio</h2>
+<label>Fichier audio</label><div class="drop"><input id="file" type="file" accept="audio/*"></div>
+<label>Titre</label><input id="title" placeholder="Titre de l'audio">
+<label>Description</label><textarea id="desc" placeholder="Description de l'audio"></textarea>
+<div style="margin-top:15px"><button class="primary" id="publish">🚀 Publier</button></div><div class="status" id="status"></div></section>
+<section class="panel"><h2>🎵 Audios existants</h2><div id="items"></div></section>
+</div></main>
+<script>
+const API="__WORKER_URL__";
+const $=s=>document.querySelector(s);
+async function api(path,opts={}){const r=await fetch(API+path,{credentials:"include",...opts});if(!r.ok)throw new Error(await r.text());return r.json()}
+function showApp(me){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");$("#who").textContent="Connecté en tant que "+me.login}
+async function boot(){try{const me=await api("/api/me");if(me.ok)showApp(me);else $("#login").classList.remove("hidden")}catch{}}
+$("#loginBtn").onclick=()=>location.href=API+"/auth";
+$("#logout").onclick=async()=>{await fetch(API+"/logout",{credentials:"include"});location.reload()};
+$("#publish").onclick=async()=>{
+ const f=$("#file").files[0];if(!f)return $("#status").textContent="Choisis un fichier.";
+ if(f.size>50*1024*1024)return $("#status").textContent="Fichier trop volumineux pour cette version.";
+ $("#status").textContent="Upload en cours…";
+ const fd=new FormData();fd.append("file",f);fd.append("title",$("#title").value);fd.append("description",$("#desc").value);
+ try{await api("/api/upload",{method:"POST",body:fd});$("#status").textContent="✅ Publié.";$("#file").value="";$("#title").value="";$("#desc").value="";load()}
+ catch(e){$("#status").textContent="❌ "+e.message}
+};
+async function load(){try{const x=await api("/api/audios");$("#items").innerHTML=x.audios.map(a=>`<div class="item"><div><b>${esc(a.title||a.name)}</b><div class="muted small">${esc(a.description||"")}<br>${esc(a.path)}</div></div><div class="actions"><button class="secondary" onclick="editItem(${JSON.stringify(a).replace(/"/g,'&quot;')})">Modifier</button><button class="danger" onclick="removeItem(${JSON.stringify(a.path).replace(/"/g,'&quot;')})">Supprimer</button></div></div>`).join("")||'<div class="muted">Aucun audio.</div>'}catch(e){$("#items").textContent="Erreur: "+e.message}}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function editItem(a){const t=prompt("Titre",a.title||"");if(t===null)return;const d=prompt("Description",a.description||"");if(d===null)return;try{await api("/api/update",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({path:a.path,title:t,description:d})});load()}catch(e){alert(e.message)}}
+async function removeItem(path){if(!confirm("Supprimer "+path+" ?"))return;try{await api("/api/delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({path})});load()}catch(e){alert(e.message)}}
+boot();load();
+</script></body></html>
