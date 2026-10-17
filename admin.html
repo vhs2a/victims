@@ -19,7 +19,7 @@
 <section class="panel"><h2>🎵 Audios existants</h2><div id="items"></div></section>
 </div></main>
 <script>
-const API="__WORKER_URL__";
+const API = "https://mes-experimentations-admin.portvr9.workers.dev";
 const $=s=>document.querySelector(s);
 async function api(path,opts={}){const r=await fetch(API+path,{credentials:"include",...opts});if(!r.ok)throw new Error(await r.text());return r.json()}
 function showApp(me){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");$("#who").textContent="Connecté en tant que "+me.login}
