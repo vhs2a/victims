@@ -1,42 +1,966 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Administration — Mes "experimentations".</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#080a14;color:#eef2ff;font-family:Inter,system-ui,sans-serif}.wrap{width:min(1050px,92vw);margin:auto;padding:45px 0}.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:25px}h1{margin:0}.muted{color:#98a2c2}.panel{background:#12162a;border:1px solid #252b48;border-radius:20px;padding:22px;margin:16px 0}label{display:block;font-weight:700;margin:14px 0 7px}input,textarea{width:100%;padding:13px;border-radius:12px;border:1px solid #313957;background:#0c0f1d;color:#fff}textarea{min-height:110px;resize:vertical}button{border:0;border-radius:12px;padding:12px 16px;font-weight:750;cursor:pointer}.primary{background:#fff;color:#101225}.danger{background:#4b1720;color:#ffdfe3}.secondary{background:#252b48;color:#eef2ff}.drop{border:1px dashed #566183;border-radius:15px;padding:30px;text-align:center}.item{display:flex;gap:15px;align-items:center;justify-content:space-between;border-top:1px solid #252b48;padding:16px 0}.item:first-child{border-top:0}.actions{display:flex;gap:8px;flex-wrap:wrap}.status{margin-top:12px;min-height:20px;color:#aeb8d6}.hidden{display:none}.login{text-align:center;padding:80px 20px}.small{font-size:13px}
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:
+        radial-gradient(circle at 20% 0%,#1a2040 0%,transparent 35%),
+        radial-gradient(circle at 90% 20%,#27183d 0%,transparent 30%),
+        #080a14;
+    color:#eef2ff;
+    font-family:Inter,system-ui,sans-serif;
+    min-height:100vh;
+}
+
+.wrap{
+    width:min(1050px,92vw);
+    margin:auto;
+    padding:45px 0;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+h1{
+    margin:0;
+    font-size:clamp(28px,5vw,48px);
+    letter-spacing:-.04em;
+}
+
+h2{
+    margin-top:0;
+}
+
+.muted{
+    color:#98a2c2;
+}
+
+.panel{
+    background:rgba(18,22,42,.88);
+    border:1px solid #252b48;
+    border-radius:20px;
+    padding:22px;
+    margin:16px 0;
+    box-shadow:0 15px 50px rgba(0,0,0,.18);
+    backdrop-filter:blur(12px);
+}
+
+label{
+    display:block;
+    font-weight:700;
+    margin:14px 0 7px;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:13px;
+    border-radius:12px;
+    border:1px solid #313957;
+    background:#0c0f1d;
+    color:#fff;
+    outline:none;
+    font:inherit;
+}
+
+input:focus,
+textarea:focus{
+    border-color:#7385ff;
+    box-shadow:0 0 0 3px rgba(115,133,255,.12);
+}
+
+textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:12px 16px;
+    font-weight:750;
+    cursor:pointer;
+    transition:.2s;
+    font:inherit;
+}
+
+button:hover{
+    transform:translateY(-1px);
+}
+
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.primary{
+    background:#fff;
+    color:#101225;
+}
+
+.danger{
+    background:#4b1720;
+    color:#ffdfe3;
+}
+
+.secondary{
+    background:#252b48;
+    color:#eef2ff;
+}
+
+.drop{
+    border:1px dashed #566183;
+    border-radius:15px;
+    padding:30px;
+    text-align:center;
+    transition:.2s;
+}
+
+.drop:hover{
+    border-color:#8595d5;
+    background:rgba(255,255,255,.02);
+}
+
+.status{
+    margin-top:12px;
+    min-height:20px;
+    color:#aeb8d6;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.login{
+    text-align:center;
+    padding:80px 20px;
+}
+
+.small{
+    font-size:13px;
+}
+
+.item{
+    display:flex;
+    gap:15px;
+    align-items:center;
+    justify-content:space-between;
+    border-top:1px solid #252b48;
+    padding:16px 0;
+}
+
+.item:first-child{
+    border-top:0;
+}
+
+.item-info{
+    min-width:0;
+    flex:1;
+}
+
+.item-title{
+    font-size:16px;
+    font-weight:700;
+    word-break:break-word;
+}
+
+.item-path{
+    margin-top:5px;
+    word-break:break-word;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.empty{
+    text-align:center;
+    padding:35px;
+    color:#98a2c2;
+}
+
+.error{
+    color:#ff8998;
+}
+
+.success{
+    color:#76e3a7;
+}
+
+@media(max-width:650px){
+
+    .top{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .top button{
+        width:100%;
+    }
+
+    .item{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .actions{
+        width:100%;
+    }
+
+    .actions button{
+        flex:1;
+    }
+}
 </style>
 </head>
-<body><main class="wrap">
-<div id="login" class="panel login"><h1>🔐 Administration</h1><p class="muted">Connexion réservée au compte autorisé.</p><button class="primary" id="loginBtn">Se connecter avec GitHub</button></div>
-<div id="app" class="hidden">
-<div class="top"><div><h1>Mes "experimentations".</h1><div id="who" class="muted"></div></div><button class="secondary" id="logout">Se déconnecter</button></div>
-<section class="panel"><h2>📤 Ajouter un audio</h2>
-<label>Fichier audio</label><div class="drop"><input id="file" type="file" accept="audio/*"></div>
-<label>Titre</label><input id="title" placeholder="Titre de l'audio">
-<label>Description</label><textarea id="desc" placeholder="Description de l'audio"></textarea>
-<div style="margin-top:15px"><button class="primary" id="publish">🚀 Publier</button></div><div class="status" id="status"></div></section>
-<section class="panel"><h2>🎵 Audios existants</h2><div id="items"></div></section>
-</div></main>
+
+<body>
+
+<main class="wrap">
+
+    <!-- LOGIN -->
+
+    <div id="login" class="panel login">
+
+        <h1>🔐 Administration</h1>
+
+        <p class="muted">
+            Connexion réservée au compte autorisé.
+        </p>
+
+        <button class="primary" id="loginBtn">
+            Se connecter avec GitHub
+        </button>
+
+        <div id="loginStatus" class="status"></div>
+
+    </div>
+
+
+    <!-- APPLICATION -->
+
+    <div id="app" class="hidden">
+
+        <div class="top">
+
+            <div>
+                <h1>Mes "experimentations".</h1>
+
+                <div id="who" class="muted"></div>
+            </div>
+
+            <button class="secondary" id="logout">
+                Se déconnecter
+            </button>
+
+        </div>
+
+
+        <!-- UPLOAD -->
+
+        <section class="panel">
+
+            <h2>📤 Ajouter un audio</h2>
+
+            <label for="file">
+                Fichier audio
+            </label>
+
+            <div class="drop">
+                <input
+                    id="file"
+                    type="file"
+                    accept="audio/*"
+                >
+            </div>
+
+
+            <label for="title">
+                Titre
+            </label>
+
+            <input
+                id="title"
+                placeholder="Titre de l'audio"
+                maxlength="200"
+            >
+
+
+            <label for="desc">
+                Description
+            </label>
+
+            <textarea
+                id="desc"
+                placeholder="Description de l'audio"
+                maxlength="1000"
+            ></textarea>
+
+
+            <div style="margin-top:15px">
+                <button class="primary" id="publish">
+                    🚀 Publier
+                </button>
+            </div>
+
+            <div class="status" id="status"></div>
+
+        </section>
+
+
+        <!-- AUDIO LIST -->
+
+        <section class="panel">
+
+            <h2>🎵 Audios existants</h2>
+
+            <div id="items">
+                <div class="empty">
+                    Chargement…
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
 <script>
-const API = "https://mes-experimentations-admin.portvr9.workers.dev";
-const $=s=>document.querySelector(s);
-async function api(path,opts={}){const r=await fetch(API+path,{credentials:"include",...opts});if(!r.ok)throw new Error(await r.text());return r.json()}
-function showApp(me){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");$("#who").textContent="Connecté en tant que "+me.login}
-async function boot(){try{const me=await api("/api/me");if(me.ok)showApp(me);else $("#login").classList.remove("hidden")}catch{}}
-$("#loginBtn").onclick=()=>location.href=API+"/auth";
-$("#logout").onclick=async()=>{await fetch(API+"/logout",{credentials:"include"});location.reload()};
-$("#publish").onclick=async()=>{
- const f=$("#file").files[0];if(!f)return $("#status").textContent="Choisis un fichier.";
- if(f.size>50*1024*1024)return $("#status").textContent="Fichier trop volumineux pour cette version.";
- $("#status").textContent="Upload en cours…";
- const fd=new FormData();fd.append("file",f);fd.append("title",$("#title").value);fd.append("description",$("#desc").value);
- try{await api("/api/upload",{method:"POST",body:fd});$("#status").textContent="✅ Publié.";$("#file").value="";$("#title").value="";$("#desc").value="";load()}
- catch(e){$("#status").textContent="❌ "+e.message}
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const API =
+    "https://mes-experimentations-admin.portvr9.workers.dev";
+
+
+const $ = selector =>
+    document.querySelector(selector);
+
+
+/* =========================================================
+   API HELPER
+========================================================= */
+
+async function api(path, options = {}) {
+
+    const response = await fetch(
+        API + path,
+        {
+            credentials: "include",
+            ...options
+        }
+    );
+
+
+    const text = await response.text();
+
+    let data;
+
+    try {
+        data = text
+            ? JSON.parse(text)
+            : {};
+    }
+    catch {
+        data = {
+            error: text
+        };
+    }
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.error ||
+            data.message ||
+            `Erreur HTTP ${response.status}`
+        );
+
+    }
+
+
+    return data;
+}
+
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function esc(value) {
+
+    return String(value ?? "")
+        .replace(
+            /[&<>"']/g,
+            character => ({
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#39;"
+            }[character])
+        );
+}
+
+
+function prettySize(bytes) {
+
+    if (!bytes)
+        return "";
+
+    const units = [
+        "B",
+        "KB",
+        "MB",
+        "GB"
+    ];
+
+    let index = 0;
+    let value = bytes;
+
+
+    while (
+        value >= 1024 &&
+        index < units.length - 1
+    ) {
+
+        value /= 1024;
+        index++;
+
+    }
+
+
+    return (
+        value.toFixed(index ? 1 : 0)
+        + " "
+        + units[index]
+    );
+}
+
+
+/* =========================================================
+   LOGIN STATE
+========================================================= */
+
+function showApp(me) {
+
+    $("#login")
+        .classList
+        .add("hidden");
+
+    $("#app")
+        .classList
+        .remove("hidden");
+
+    $("#who").textContent =
+        "Connecté en tant que " +
+        (me.username || "administrateur");
+
+}
+
+
+/* =========================================================
+   CHECK SESSION
+========================================================= */
+
+async function boot() {
+
+    try {
+
+        const me =
+            await api("/api/me");
+
+
+        if (me.authenticated) {
+
+            showApp(me);
+
+            await load();
+
+        }
+        else {
+
+            $("#login")
+                .classList
+                .remove("hidden");
+
+        }
+
+    }
+    catch(error) {
+
+        console.error(
+            "Erreur de connexion:",
+            error
+        );
+
+        $("#login")
+            .classList
+            .remove("hidden");
+
+        $("#loginStatus").textContent =
+            "Impossible de contacter le serveur.";
+
+    }
+
+}
+
+
+/* =========================================================
+   GITHUB LOGIN
+========================================================= */
+
+$("#loginBtn").onclick = () => {
+
+    window.location.href =
+        API + "/auth";
+
 };
-async function load(){try{const x=await api("/api/audios");$("#items").innerHTML=x.audios.map(a=>`<div class="item"><div><b>${esc(a.title||a.name)}</b><div class="muted small">${esc(a.description||"")}<br>${esc(a.path)}</div></div><div class="actions"><button class="secondary" onclick="editItem(${JSON.stringify(a).replace(/"/g,'&quot;')})">Modifier</button><button class="danger" onclick="removeItem(${JSON.stringify(a.path).replace(/"/g,'&quot;')})">Supprimer</button></div></div>`).join("")||'<div class="muted">Aucun audio.</div>'}catch(e){$("#items").textContent="Erreur: "+e.message}}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-async function editItem(a){const t=prompt("Titre",a.title||"");if(t===null)return;const d=prompt("Description",a.description||"");if(d===null)return;try{await api("/api/update",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({path:a.path,title:t,description:d})});load()}catch(e){alert(e.message)}}
-async function removeItem(path){if(!confirm("Supprimer "+path+" ?"))return;try{await api("/api/delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({path})});load()}catch(e){alert(e.message)}}
-boot();load();
-</script></body></html>
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+$("#logout").onclick = async () => {
+
+    try {
+
+        await fetch(
+            API + "/logout",
+            {
+                credentials:"include"
+            }
+        );
+
+    }
+    finally {
+
+        window.location.href =
+            "./admin.html";
+
+    }
+
+};
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+$("#publish").onclick = async () => {
+
+    const file =
+        $("#file").files[0];
+
+
+    if (!file) {
+
+        $("#status").textContent =
+            "❌ Choisis un fichier.";
+
+        return;
+
+    }
+
+
+    if (
+        file.size >
+        50 * 1024 * 1024
+    ) {
+
+        $("#status").textContent =
+            "❌ Fichier trop volumineux. Maximum : 50 Mo.";
+
+        return;
+
+    }
+
+
+    if (
+        !file.type.startsWith("audio/")
+    ) {
+
+        $("#status").textContent =
+            "❌ Le fichier doit être un fichier audio.";
+
+        return;
+
+    }
+
+
+    const button =
+        $("#publish");
+
+    button.disabled = true;
+
+
+    $("#status").textContent =
+        "⏳ Upload en cours…";
+
+
+    const form =
+        new FormData();
+
+
+    form.append(
+        "file",
+        file
+    );
+
+    form.append(
+        "title",
+        $("#title").value.trim()
+    );
+
+    form.append(
+        "description",
+        $("#desc").value.trim()
+    );
+
+
+    try {
+
+        await api(
+            "/api/upload",
+            {
+                method:"POST",
+                body:form
+            }
+        );
+
+
+        $("#status").innerHTML =
+            '<span class="success">✅ Audio publié avec succès.</span>';
+
+
+        $("#file").value = "";
+
+        $("#title").value = "";
+
+        $("#desc").value = "";
+
+
+        await load();
+
+    }
+    catch(error) {
+
+        console.error(error);
+
+        $("#status").innerHTML =
+            '<span class="error">❌ ' +
+            esc(error.message) +
+            '</span>';
+
+    }
+    finally {
+
+        button.disabled = false;
+
+    }
+
+};
+
+
+/* =========================================================
+   LOAD AUDIO LIST
+========================================================= */
+
+async function load() {
+
+    const container =
+        $("#items");
+
+
+    container.innerHTML =
+        '<div class="empty">⏳ Chargement…</div>';
+
+
+    try {
+
+        const data =
+            await api("/api/audios");
+
+
+        const files =
+            Array.isArray(data.files)
+                ? data.files
+                : [];
+
+
+        if (!files.length) {
+
+            container.innerHTML =
+                '<div class="empty">' +
+                'Aucun audio trouvé.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            files
+                .map(audio => {
+
+                    const json =
+                        JSON.stringify(audio)
+                            .replace(/'/g, "&#39;");
+
+
+                    const filename =
+                        JSON.stringify(audio.name)
+                            .replace(/'/g, "&#39;");
+
+
+                    return `
+
+                    <div class="item">
+
+                        <div class="item-info">
+
+                            <div class="item-title">
+                                ${esc(
+                                    audio.title ||
+                                    audio.name
+                                )}
+                            </div>
+
+                            <div class="muted small item-path">
+
+                                ${
+                                    audio.description
+                                        ? esc(audio.description)
+                                        : "Aucune description"
+                                }
+
+                                <br>
+
+                                ${esc(audio.path)}
+
+                                ${
+                                    audio.size
+                                        ? " · " +
+                                          prettySize(audio.size)
+                                        : ""
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            <button
+                                class="secondary"
+                                onclick='editItem(${json})'
+                            >
+                                ✏️ Modifier
+                            </button>
+
+
+                            <button
+                                class="danger"
+                                onclick='removeItem(${filename})'
+                            >
+                                🗑️ Supprimer
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    `;
+
+                })
+                .join("");
+
+    }
+    catch(error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            '<div class="empty error">' +
+            '❌ Erreur : ' +
+            esc(error.message) +
+            '</div>';
+
+    }
+
+}
+
+
+/* =========================================================
+   EDIT AUDIO
+========================================================= */
+
+async function editItem(audio) {
+
+    const title =
+        prompt(
+            "Titre",
+            audio.title || audio.name
+        );
+
+
+    if (title === null)
+        return;
+
+
+    const description =
+        prompt(
+            "Description",
+            audio.description || ""
+        );
+
+
+    if (description === null)
+        return;
+
+
+    try {
+
+        await api(
+            "/api/update",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+
+                    /*
+                     * IMPORTANT :
+                     * Le Worker attend "filename",
+                     * pas "path".
+                     */
+
+                    filename:
+                        audio.name,
+
+                    title:
+                        title,
+
+                    description:
+                        description
+
+                })
+
+            }
+        );
+
+
+        await load();
+
+    }
+    catch(error) {
+
+        alert(
+            "Impossible de modifier l'audio :\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DELETE AUDIO
+========================================================= */
+
+async function removeItem(filename) {
+
+    if (
+        !confirm(
+            "Supprimer définitivement " +
+            filename +
+            " ?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        await api(
+            "/api/delete",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+
+                    /*
+                     * Le Worker attend
+                     * également "filename".
+                     */
+
+                    filename:
+                        filename
+
+                })
+
+            }
+        );
+
+
+        await load();
+
+    }
+    catch(error) {
+
+        alert(
+            "Impossible de supprimer l'audio :\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+boot();
+
+</script>
+
+</body>
+</html>
