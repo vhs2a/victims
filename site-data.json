@@ -1,6 +1,11 @@
 {
   "title": "Mes \"experimentations\".",
-  "description": "Besoin d'aide? Je ne prend que les demandes privÃ©es.",
-  "explanation": "Ils ont tous fait une erreur. Moi, j'ai appuyer sur 2 boutons et j'ai tout trouvÃ©.",
-  "audios": {}
+  "description": "Besoin d'aide? Je ne prend que les demandes privÃÂ©es.",
+  "explanation": "Ils ont tous fait une erreur. Moi, j'ai appuyer sur 2 boutons et j'ai tout trouvÃÂ©.",
+  "audios": {
+    "AUD-20261017-WA0209.wav": {
+      "title": "PB",
+      "description": "Capter, enregistrer ou transmettre l'image d'une personne se trouvant dans un lieu privé, sans son consentement, est puni d'1 an d'emprisonnement et de 45 000 € d'amende"
+    }
+  }
 }
